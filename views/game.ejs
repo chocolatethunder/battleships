@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link  type="text/css" rel="stylesheet" href="/stylesheets/style.css"></link>
+
+
+  <title>Battleship</title>
+  <style>
+    #profile {
+      border: solid 2px black;
+      width:10em;
+      height:10em;
+    }
+    #rooms{
+      height: 30em;
+      bottom:0;
+      left:0;
+      vertical-align: bottom;
+      overflow-y:auto;
+      border: solid 2px black;
+      background-color: whitesmoke;
+      padding:2px;
+    }
+    #hostGame{
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+  </style>
+
+</head>
+<body>
+<div class="text-center">
+  <h1>Game Lobby</h1>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col col-sm-6" align="center">
+      <div>
+        Profile
+        <br>
+        <img id="profile" class="img-circle" src="https://customers.accrisoft.com/clientuploads/communities.png" >
+      </div>
+      <div id="hostGame">
+        <button class="btn btn-primary">Host a game</button>
+      </div>
+      <div>
+        Search for a profile
+        <div class="input-group">
+          <input type="text" class="form-control" id="searchPlayer" placeholder="Enter player profile name here">
+          <span class="input-group-btn">
+            <button class="btn btn-default" id="searchPlayerBtn" type="button">Look up profile</button>
+          </span>
+        </div>
+      </div>
+
+    </div>
+    <div class="col col-sm-6">
+      <div>
+        Open rooms
+        <div id="rooms">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
