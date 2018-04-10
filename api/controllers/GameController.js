@@ -9,6 +9,15 @@ module.exports = {
   ensureAuthenticated: function(req,res){
     console.log('isAuthenticated called');
     ensureAuthenticated(req,res);
+  },
+  createGameRoom: function(req,res){
+    console.log('createGameRoom called');
+    sails.sockets.join(req,'GameRoom1');
+    sails.sockets.broadcast('GameRoom1', 'addRoomToView', {roomName:"GameRoo12"});
+    sails.sockets.blast('addRoomToView', {roomName:"gameroom12"});
+    return res.json({
+      message:'Successfully created room'
+    });
   }
 };
 
