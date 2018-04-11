@@ -22,6 +22,8 @@
       border: solid 2px black;
       width:10em;
       height:10em;
+      margin-top:2em;
+      margin-bottom:2em;
     }
     #rooms{
       height: 30em;
@@ -37,47 +39,52 @@
       margin-top: 2em;
       margin-bottom: 2em;
     }
+    .availableGames{
+      outline: 2px solid black;
+    }
   </style>
 
 </head>
 <body>
-<div class="text-center">
-  <h1>Game Lobby</h1>
-</div>
+<div id="pageDisplay">
+  <div class="text-center">
+    <h1>Game Lobby</h1>
+  </div>
 
-<div class="container">
-  <div class="row">
-    <div class="col col-sm-6" align="center">
-      <div>
-        Profile
-        <br>
-        <img id="profile" class="img-circle" src="https://customers.accrisoft.com/clientuploads/communities.png" >
-      </div>
-      <div id="hostGameRoom">
-        <button class="btn btn-primary" id="hostGameBtn">Host a game</button>
-      </div>
-      <div>
-        Search for a profile
-        <div class="input-group">
-          <input type="text" class="form-control" id="searchPlayer" placeholder="Enter player profile name here">
-          <span class="input-group-btn">
+  <div class="container">
+    <div class="row">
+      <div class="col col-sm-6" align="center">
+        <div>
+          Profile
+          <br>
+          <img id="profile" class="img-circle" src="https://customers.accrisoft.com/clientuploads/communities.png" >
+        </div>
+        <div id="hostGameRoom">
+          <button class="btn btn-primary" id="hostGameBtn">Host a game</button>
+        </div>
+        <div>
+          Search for a profile
+          <div class="input-group">
+            <input type="text" class="form-control" id="searchPlayer" placeholder="Enter player profile name here">
+            <span class="input-group-btn">
             <button class="btn btn-default" id="searchPlayerBtn" type="button">Look up profile</button>
           </span>
+          </div>
+        </div>
+
+      </div>
+      <div class="col col-sm-6">
+        <div>
+          Open rooms
+          <div id="rooms">
+
+          </div>
         </div>
       </div>
-
     </div>
-    <div class="col col-sm-6">
-      <div>
-        Open rooms
-        <div id="rooms">
-
-        </div>
-      </div>
-    </div>
+    <script src="/js/dependencies/sails.io.js"></script>
+    <script src="/js/gameLobby.js"></script>
   </div>
-  <script src="/js/dependencies/sails.io.js"></script>
-  <script src="/js/gameLobby.js"></script>
 </div>
 </body>
 </html>
