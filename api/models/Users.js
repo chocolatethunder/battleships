@@ -20,12 +20,14 @@ module.exports = {
     username:{
       type:'string',
       required: true,
-      unique: true
+      unique: true,
+	  minLength:4
     },
     email:{
       type: 'email',
       required: true,
-      unique: true
+      unique: true,
+	  isEmail: true
     },
 	// One to one association (references)
 	profile:{
