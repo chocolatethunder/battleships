@@ -8,7 +8,23 @@
 module.exports = {
 
   attributes: {
-
+	state: {
+		type:'string',
+		isIn: ['joining','arranging','inprogress','finished'],
+		required:true
+	},	
+	winner: {
+		model:'users'
+	},
+	loser: {
+		model:'users'
+	},
+	// One to many association (reference)
+	profile: {
+		collection:'profile',
+		via:'belongs_to'
+	}
   }
+  
 };
 

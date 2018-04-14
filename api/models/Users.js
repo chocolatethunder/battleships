@@ -6,9 +6,9 @@
  */
 var bcrypt = require('bcrypt-nodejs');
 module.exports = {
-
   attributes: {
-    firstname:{
+    /*
+	firstname:{
       type:'string',
       required:true
     },
@@ -16,16 +16,35 @@ module.exports = {
       type:'string',
       required:true
     },
+	*/
+    username:{
+      type:'string',
+      required: true,
+      unique: true
+    },
     email:{
       type: 'email',
       required: true,
       unique: true
     },
-    username:{
-      type:'string',
-      required: true,
-      unique: true
-    }
+	// One to one association (references)
+	profile:{
+		collection:'profile',
+		via:'uid'
+	},
+	// One to many association (references)
+	winner:{
+		collection:'game',
+		via:'winner'
+	},
+	loser:{
+		collection:'game',
+		via:'loser'
+	},
+	friends: {
+		collection:'friends',
+		via:'fid'
+	}
   },
   customToJSON: function(){
     return _.omit(this, ['password'])
