@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>A Very Simple Battleship Game</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		var socket = io();
+	</script>
+	<body>
+	
+	<h1>Battleship</h1>	
+
+	<p>Click the board to fire at a ship. Try to sink every battleship!</p>
+	<div id = "enemyBoard" style="display: none;">
+	</div>
+	<div id = "placeShips">
+		<p>Place your ships!</p>
+		<p>Carrier (5 blocks)</p>
+		<p>Battleship (4 blocks)</p>
+		<p>Submarine (3 blocks)</p>
+		<p>Destroyer (3 blocks)</p>
+		<p>Patrol Boat (2 blocks)</p>
+		<button type="button" class="btn" onclick="rotateShips()" id="Rotate">Rotate</button>
+	</div>
+	<div id="playerBoard">
+	</div>
+	
+	<script type="text/javascript" src="battleship.js"></script>
+	</body>
+</html>
