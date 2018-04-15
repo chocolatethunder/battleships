@@ -13,6 +13,7 @@ var enemyBoardContainer = document.getElementById("enemyBoard");
 var playerBoardContainer = document.getElementById("playerBoard");
 
 // make the grid columns and rows for the player
+//initial code via https://github.com/LearnTeachCode/Battleship-JavaScript
 for (i = 0; i < cols; i++) {
 	for (j = 0; j < rows; j++) {
 		
@@ -20,16 +21,20 @@ for (i = 0; i < cols; i++) {
 		var square = document.createElement("div");
 		playerBoardContainer.appendChild(square);
 
-    // give each div element a unique id based on its row and column, like "s00"
+		// give each div element a unique id based on its row and column, like "s00"
 		square.id = 'p' + j + i;			
-		
 		// set each grid square's coordinates: multiples of the current row or column number
 		var topPosition = j * squareSize;
 		var leftPosition = i * squareSize;			
 		
+		// set the background based on the location of the square
+		var position = j * 35 + "px " + i * 35 + "px"
+		square.style.backgroundImage = "url('Assets/Grid.png')";
+		square.style.backgroundPosition = position;
+		
 		// use CSS absolute positioning to place each grid square on the page
 		square.style.top = topPosition + 'px';
-		square.style.left = leftPosition + 'px';						
+		square.style.left = leftPosition + 'px';			
 	}
 }
 
@@ -41,12 +46,17 @@ for (i = 0; i < cols; i++) {
 		var square = document.createElement("div");
 		enemyBoardContainer.appendChild(square);
 
-    // give each div element a unique id based on its row and column, like "s00"
+		// give each div element a unique id based on its row and column, like "s00"
 		square.id = 'e' + j + i;			
 		
 		// set each grid square's coordinates: multiples of the current row or column number
 		var topPosition = j * squareSize;
-		var leftPosition = i * squareSize;			
+		var leftPosition = i * squareSize;
+
+		// set the background based on the location of the square
+		var position = j * 35 + "px " + i * 35 + "px"
+		square.style.backgroundImage = "url('Assets/Grid.png')";
+		square.style.backgroundPosition = position;	
 		
 		// use CSS absolute positioning to place each grid square on the page
 		square.style.top = topPosition + 'px';
@@ -69,6 +79,7 @@ var playerHealth = 17;
 //ship array
 var ships = [5, 4, 3, 3, 2];
 
+//initial code via https://github.com/LearnTeachCode/Battleship-JavaScript
 /* create the 2d array that will contain the status of each square on the board
    and place ships on the board (initial enemyBoard has values but will be overwritten!)
    0 = empty, 1 = part of a ship, 2 = a sunken part of a ship, 3 = a missed shot
@@ -218,6 +229,8 @@ function check(h_alignment, len, r, c){
 	return true; 
 }
 
+//when this reaches 3, the destroyer will be placed instead of the submarine
+var submarinePlaced = 0;
 //places the ships onto the board 
 function place(ship_length, r, c, h_alignment){
 		//console.log("place1");
@@ -227,13 +240,41 @@ function place(ship_length, r, c, h_alignment){
 			playerBoard[r][+c + +i] = 1;
 			var column = +c + +i;
 			var eid = "p" + r + column;
-			document.getElementById(eid).style.background = 'blue';
+			var xpos = ship_length * 35 - 35 * i;
+			var position = xpos + "px 0px"
+			if(ship_length == 5)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/CarrierHorizontal.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 4)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/BattleshipHorizontal.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 3 && submarinePlaced < 3) {
+				document.getElementById(eid).style.backgroundImage = "url('Assets/SubmarineHorizontal.png'), " + document.getElementById(eid).style.backgroundImage;
+				submarinePlaced++;
+			}
+			else if(ship_length == 3 && submarinePlaced == 3)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/DestroyerHorizontal.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 2)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/PatrolHorizontal.png'), " + document.getElementById(eid).style.backgroundImage;
+			document.getElementById(eid).style.backgroundPosition = position;
 		}
 		else{
 			playerBoard[+r + +i][c] = 1;
 			var row = +r + +i;
 			var eid = "p" + row + c;
-			document.getElementById(eid).style.background = 'blue';
+			var ypos = ship_length * 35 - 35 * i;
+			var position = "0px " + ypos + "px"
+			if(ship_length == 5)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/CarrierVertical.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 4)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/BattleshipVertical.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 3 && submarinePlaced < 3) {
+				document.getElementById(eid).style.backgroundImage = "url('Assets/SubmarineVertical.png'), " + document.getElementById(eid).style.backgroundImage;
+				submarinePlaced++;
+			}
+			else if(ship_length == 3 && submarinePlaced == 3)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/DestroyerVertical.png'), " + document.getElementById(eid).style.backgroundImage;
+			else if(ship_length == 2)
+				document.getElementById(eid).style.backgroundImage = "url('Assets/PatrolVertical.png'), " + document.getElementById(eid).style.backgroundImage;
+			document.getElementById(eid).style.backgroundPosition = position;
 		}
 	}
 	//console.log("place3");
@@ -278,7 +319,7 @@ function fireTorpedo(e) {
 				document.getElementById("informationBar").innerHTML = "You missed!"
 			// if player clicks a square with a ship, change the color and change square's value
 			} else if (enemyBoard[row][col] == 1) {
-				e.target.style.background = 'red';
+				e.target.style.backgroundImage = "url('Assets/Explosion.png'), " + e.target.style.backgroundImage;
 				// set this square's value to 2 to indicate the ship has been hit
 				enemyBoard[row][col] = 2;
 				myTurn = false;
@@ -320,7 +361,7 @@ socket.on('receiveTorpedo', function(eid) {
 		document.getElementById("informationBar").innerHTML = "Your opponent missed!"
 	// if enemy clicks a square with a ship, change the color and change square's value
 	} else if (playerBoard[row][col] == 1) {
-		document.getElementById(eid).style.background = 'red';
+		document.getElementById(eid).style.backgroundImage = "url('Assets/Explosion.png'), " + document.getElementById(eid).style.backgroundImage;
 		// set this square's value to 2 to indicate the ship has been hit
 		playerBoard[row][col] = 2;
 		document.getElementById("informationBar").innerHTML = "Your opponent hit one of your ships!"
