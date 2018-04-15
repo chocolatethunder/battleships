@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>A Multiplayer Battleship Game</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+		var socket = io();
+		//chat functions in jquery
+		$(function() {
+			//on clicking send or hitting enter after typing a message, send the message to the server
+			$('form').submit(function(){
+				message = name + ": " + $('#m').val();
+				socket.emit('chat', message);
+				$('#m').val('');
+				return false;
+			});
+			//on receiving a message from the server, append it to the chat log
+			socket.on('chat', function(msg){
+				$('#messages').append($('<li>').html(msg));
+			});
+		});
+	</script>
+	<body>
+	
+	<h1>Player 1 VS Player 2</h1>	
+	
+	<p id="turnTracker">Set up your ships!</p>
+	<div id="wrapper">
+		<div id="playerBoard"></div>
+		<div id = "enemyBoard" style="display: none;"></div>
+		<div id = "placeShips">
+			<p id="aircraftCarrier">Aircraft Carrier (5 blocks)</p>
+			<p id="battleship">Battleship (4 blocks)</p>
+			<p id="submarine">Submarine (3 blocks)</p>
+			<p id="destroyer">Destroyer (3 blocks)</p>
+			<p id="patrolBoat">Patrol Boat (2 blocks)</p>
+			<button type="button" class="btn" onclick="rotateShips()" id="Rotate">Rotate (Current: Horizontal)</button>
+		</div>
+	</div>
+	<p id="informationBar">Click on the grid to place your Aircraft Carrier!</p>
+	<div id ="chatBox">
+		<ul id="messages" ></ul>
+	</div>
+	<form action="">
+		<input id="m" autocomplete="off"; /><button>Send</button>
+	</form>
+	<script type="text/javascript" src="battleship.js"></script>
+	</body>
+</html>
