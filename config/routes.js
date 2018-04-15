@@ -50,5 +50,7 @@ module.exports.routes = {
   'GET /register': {view: 'register'},
   'GET /game': 'GameController.ensureAuthenticated',
   '/GameController/createGameRoom' : 'GameController.createGameRoom',
+  'GET /gameMatchRoom' : {view:'gameMatchRoom'},
+  '/GameController/joinGameRoom': 'GameController.joinGameRoom'
 
 };
