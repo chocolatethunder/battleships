@@ -26,8 +26,7 @@ module.exports = {
     email:{
       type: 'email',
       required: true,
-      unique: true,
-	  isEmail: true
+      unique: true
     },
 	// One to one association (references)
 	profile:{
