@@ -53,6 +53,7 @@ module.exports = {
 	belongs_to: {
 		model:'game'
 	}
+
   }
 
 };
