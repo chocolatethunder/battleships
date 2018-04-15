@@ -36,8 +36,12 @@ module.exports = {
     },
     ranking:{
       type: 'string'
+    },
+    averageShotsTakenInWins:{
+      type:'int'
     }
   },
+  connection: 'mongodb',
   customToJSON: function(){
     return _.omit(this, ['password'])
   },

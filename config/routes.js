@@ -51,6 +51,7 @@ module.exports.routes = {
   'GET /game': 'GameController.ensureAuthenticated',
   '/GameController/createGameRoom' : 'GameController.createGameRoom',
   'GET /gameMatchRoom' : {view:'gameMatchRoom'},
-  '/GameController/joinGameRoom': 'GameController.joinGameRoom'
-
+  '/GameController/joinGameRoom': 'GameController.joinGameRoom',
+  'POST /createUser': 'RegisterController.createUser',
+  'GET /awaitingPlayer': {view: 'awaitingPlayer'}
 };

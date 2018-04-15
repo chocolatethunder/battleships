@@ -53,6 +53,8 @@ module.exports = {
         //sails.sockets.broadcast('GameRoom1', 'addRoomToView', {roomName:"GameRoo12"});
         // add a room to all
         sails.sockets.blast('addRoomToView', {roomName:roomName, host:username});
+        // emit a socket to the current user to send them to a waiting room;
+        sails.sockets.broadcast(sails.sockets.getId(req),'takePlayerToWaitingRoom');
 
 
         // after this we should emit a socket to send the calling user to the "waiting" game room to wait for a game

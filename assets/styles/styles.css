@@ -22,3 +22,7 @@
 .availableGames{
   outline: 2px solid black;
 }
+
+#userProfileResult{
+  text-align: left;
+}

@@ -46,6 +46,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">User Profile</h5>
+                  <h4 id="username"></h4>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -54,11 +55,10 @@
                   <p>Show search results here.</p>
                   <div class="row">
                     <div id="profilePicture" class="col-sm-6">
-                      <img id="profilePicture" src="http://via.placeholder.com/350x150" class="img-thumbnail">
+                      <img id="profilePicture" src="https://customers.accrisoft.com/clientuploads/communities.png" class="img-thumbnail">
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 text-left" id="userProfileResult">
                       <div id="rank">
-                        Rank :10
                       </div>
                       <div id="numGamesPlayed">
                         Games played: 10
@@ -70,8 +70,7 @@
                         Win rate: 80%
                       </div>
                       <div id="averageShotsTakenInWin">
-                        Average Shots Taken in winning games: 42
-                        Average Shots Taken in winning games: 42
+                        avg
                       </div>
                     </div>
                   </div>
@@ -83,25 +82,7 @@
                         <canvas id="myChart"></canvas>
                       </div>
                       <script>
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var chart = new Chart(ctx, {
-                          // The type of chart we want to create
-                          type: 'doughnut',
 
-                          // The data for our dataset
-                          data: {
-                            labels: ['Wins', 'Losses'],
-                            datasets: [{
-                              label: ['red', 'blue'],
-                              fillColor: ["blue", "red"],
-                              backgroundColor: ["blue","red"],
-                              borderColor: ["blue", "red"],
-                              data: [40,30]
-                            }]
-                          },
-                          // Configuration options go here
-                          options: {}
-                        });
 
                       </script>
 
@@ -131,5 +112,6 @@
 </div>
 <script src="/js/dependencies/sails.io.js"></script>
 <script src="/js/gameLobby.js"></script>
+<script src="/js/profile.js"></script>
 </body>
 </html>

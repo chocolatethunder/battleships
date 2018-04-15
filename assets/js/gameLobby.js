@@ -31,12 +31,6 @@ io.socket.on('noPlayerFound', function(){
   alert("No Player Found");
 });
 
-io.socket.on('playerFound', function(data){
-  //alert("Player was found");
-  searchResultModal.style.display = "block";
-  //$("body").load('gameMatchRoom');
-
-})
 
 io.socket.on('addRoomToView', function(data){
   console.log('addRoomToView called');
@@ -45,14 +39,14 @@ io.socket.on('addRoomToView', function(data){
     '<button class="button btn-default spectateRoom" id="spectateBtn">Spectate</button> ' +
     '<p id="gameNameHostname">' + 'Game host:' + data.host + '</p> ' +
     '</div>';
+
 });
 
 
-io.socket.on('addRoomEventListeners', function(data){
-  console.log('adding event listeners');
-  var newButtonName = "joinBtn" + data.roomName;
-  var joinBtn1 = document.getElementById('newButtonName');
-})
+io.socket.on('takePlayerToWaitingRoom', function(){
+ // alert("take player to waiting room");
+  $("body").load('awaitingPlayer');
+});
 
 
 hostGameBtn.addEventListener('click', function(){
