@@ -7,6 +7,7 @@ var enemyReady = false;
 var playerReady = false;
 //whether or not it is this players turn
 var myTurn = false;
+var gameOver = false;
 // get the container element
 var enemyBoardContainer = document.getElementById("enemyBoard");
 var playerBoardContainer = document.getElementById("playerBoard");
@@ -69,7 +70,7 @@ var playerHealth = 17;
 var ships = [5, 4, 3, 3, 2];
 
 /* create the 2d array that will contain the status of each square on the board
-   and place ships on the board (later, create function for random placement!)
+   and place ships on the board (initial enemyBoard has values but will be overwritten!)
    0 = empty, 1 = part of a ship, 2 = a sunken part of a ship, 3 = a missed shot
 */
 var enemyBoard = [
@@ -137,6 +138,26 @@ function placeShip(e) {
 				var len = ships[shipNumber]; 
 				place(len, r, c, horizontal);
 				shipNumber++;
+				if(shipNumber == 1) {
+					document.getElementById("aircraftCarrier").style.textDecoration = "line-through";
+					document.getElementById("informationBar").innerHTML = "Click on the grid to place your Battleship";
+				}
+				else if(shipNumber == 2) {
+					document.getElementById("battleship").style.textDecoration = "line-through";
+					document.getElementById("informationBar").innerHTML = "Click on the grid to place your Submarine";
+				}
+				else if(shipNumber == 3) {
+					document.getElementById("submarine").style.textDecoration = "line-through";
+					document.getElementById("informationBar").innerHTML = "Click on the grid to place your Destroyer";
+				}
+				else if(shipNumber == 4) {
+					document.getElementById("destroyer").style.textDecoration = "line-through";
+					document.getElementById("informationBar").innerHTML = "Click on the grid to place your Patrol Boat";
+				}
+				else if(shipNumber == 5) {
+					document.getElementById("patrolBoat").style.textDecoration = "line-through";
+					document.getElementById("informationBar").innerHTML = "You are done placing your ships! Waiting on Opponent...";
+				}
 				//once ship placement is finished, send board configuration to opponent
 				if (shipNumber == 5) {
 					socket.emit('transferBoard', playerBoard);
@@ -146,8 +167,26 @@ function placeShip(e) {
 						var p = document.getElementById("placeShips");
 						p.style.display = "none";
 						var en = document.getElementById("enemyBoard");
-						en.style.display = "block";
+						en.style.display = "inline-block";
+						document.getElementById("turnTracker").innerHTML = "Opponent's Turn!";
+						document.getElementById("informationBar").innerHTML = "You finished placing ships second so your opponent gets to take the first shot!";
 					}
+				}
+			} else {
+				if(shipNumber == 0) {
+					document.getElementById("informationBar").innerHTML = "You can't place your Aircraft Carrier here!";
+				}
+				else if(shipNumber == 1) {
+					document.getElementById("informationBar").innerHTML = "You can't place your Battleship here!";
+				}
+				else if(shipNumber == 2) {
+					document.getElementById("informationBar").innerHTML = "You can't place your Submarine here!";
+				}
+				else if(shipNumber == 3) {
+					document.getElementById("informationBar").innerHTML = "You can't place your Destroyer here!"
+				}
+				else if(shipNumber == 4) {
+					document.getElementById("informationBar").innerHTML = "You can't place your Patrol Boat here!";
 				}
 			}
 			//console.log("placeShip4");
@@ -202,7 +241,14 @@ function place(ship_length, r, c, h_alignment){
 
 //toggles vertical/horizontal ship placement
 function rotateShips() {
-	horizontal = !horizontal;
+	if(horizontal == true) {
+		horizontal = false;
+		document.getElementById("Rotate").innerHTML = "Rotate (Current: Vertical)"
+	} else {
+		horizontal = true;
+		document.getElementById("Rotate").innerHTML = "Rotate (Current: Horizontal)"
+	}
+	
 }
 		
 enemyBoardContainer.addEventListener("click", fireTorpedo, false);
@@ -210,7 +256,7 @@ enemyBoardContainer.addEventListener("click", fireTorpedo, false);
 // initial code via http://www.kirupa.com/html5/handling_events_for_many_elements.htm:
 function fireTorpedo(e) {
 	//this function only means something if it is the current players turn
-	if(myTurn) {
+	if(myTurn && !gameOver) {
 		// if item clicked (e.target) is not the parent element on which the event listener was set (e.currentTarget)
 		if (e.target !== e.currentTarget) {
 			// extract row and column # from the HTML element's id
@@ -228,26 +274,33 @@ function fireTorpedo(e) {
 				// set this square's value to 3 to indicate that they fired and missed
 				enemyBoard[row][col] = 3;
 				myTurn = false;
+				document.getElementById("turnTracker").innerHTML = "Opponent's Turn!";
+				document.getElementById("informationBar").innerHTML = "You missed!"
 			// if player clicks a square with a ship, change the color and change square's value
 			} else if (enemyBoard[row][col] == 1) {
 				e.target.style.background = 'red';
 				// set this square's value to 2 to indicate the ship has been hit
 				enemyBoard[row][col] = 2;
 				myTurn = false;
+				document.getElementById("turnTracker").innerHTML = "Opponent's Turn!";
+				document.getElementById("informationBar").innerHTML = "You hit an enemy vessel!"
+
 				// increment hitCount each time a ship is hit
 				hitCount++;
 				// this definitely shouldn't be hard-coded, but here it is anyway. lazy, simple solution:
 				if (hitCount == 17) {
-					alert("All enemy ships have been defeated! You win!");
+					document.getElementById("informationBar").innerHTML = "All enemy ships have been defeated! You win!"
+					document.getElementById("turnTracker").innerHTML = "Game Over!"
+					gameOver = true;
 				}
 				
 			// if player clicks a square that's been previously hit, let them know
 			} else if (enemyBoard[row][col] > 1) {
-				alert("Stop wasting your torpedos! You already fired at this location.");
+				document.getElementById("informationBar").innerHTML = "Stop wasting your torpedos! You already fired at this location!";
 			}		
 		}
-	} else {
-		alert("Wait your turn!");
+	} else if (!gameOver) {
+		document.getElementById("informationBar").innerHTML = "Wait your turn!";
 	}
     e.stopPropagation();
 }
@@ -258,28 +311,32 @@ socket.on('receiveTorpedo', function(eid) {
 	var row = eid.substring(1,2);
 	var col = eid.substring(2,3);
 	myTurn = true;
-	
+	document.getElementById("turnTracker").innerHTML = "Your Turn!";
 	// if enemy clicks a square with no ship, change the color and change square's value
 	if (playerBoard[row][col] == 0) {
 		document.getElementById(eid).style.background = '#bbb';
 		// set this square's value to 3 to indicate that they fired and missed
 		playerBoard[row][col] = 3;
-		
+		document.getElementById("informationBar").innerHTML = "Your opponent missed!"
 	// if enemy clicks a square with a ship, change the color and change square's value
 	} else if (playerBoard[row][col] == 1) {
 		document.getElementById(eid).style.background = 'red';
 		// set this square's value to 2 to indicate the ship has been hit
 		playerBoard[row][col] = 2;
-		
+		document.getElementById("informationBar").innerHTML = "Your opponent hit one of your ships!"
 		// increment hitCount each time a ship is hit
 		playerHealth--;
 		// this definitely shouldn't be hard-coded, but here it is anyway. lazy, simple solution:
 		if (playerHealth == 0) {
-			alert("All your ships have been defeated! You lose!");
+			document.getElementById("informationBar").innerHTML = "All your ships have been defeated! You lose!"
+			document.getElementById("turnTracker").innerHTML = "Game Over!"
+			gameOver = true;
+			myTurn = false;
 		}
 	}
 });
 
+//runs when the other player finishes setting up their board
 socket.on('receiveBoard', function(newBoard) {
 	enemyBoard = newBoard;
 	enemyReady = true;
@@ -288,8 +345,10 @@ socket.on('receiveBoard', function(newBoard) {
 		var p = document.getElementById("placeShips");
 		p.style.display = "none";
 		var en = document.getElementById("enemyBoard");
-		en.style.display = "block";
+		en.style.display = "inline-block";
 		//the player that finishes setting up their board first gets to go first
 		myTurn = true;
+		document.getElementById("turnTracker").innerHTML = "Your Turn!";
+		document.getElementById("informationBar").innerHTML = "You finished placing ships first so you get to take the first shot!";
 	}
 });
