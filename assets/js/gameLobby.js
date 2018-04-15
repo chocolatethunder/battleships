@@ -1,7 +1,42 @@
 var hostGameBtn = document.getElementById('hostGameBtn');
 var rooms = document.getElementById('rooms');
-var joinGameButtons = [];
+var searchPlayerBtn = document.getElementById('searchPlayerBtn');
+var playerToSearchFor = document.getElementById('playerToSearchFor');
+//var joinGameButtons = [];
+var searchResultModal = document.getElementById('searchResultModal');
+var span = document.getElementsByClassName("close")[0];
+var searchResults = document.getElementById('searchResults');
 
+searchPlayerBtn.addEventListener('click', function(){
+  console.log("searching for player:" + playerToSearchFor.value);
+  io.socket.get('/users/searchUser', {playerToFind: playerToSearchFor.value})
+
+});
+
+span.onclick = function() {
+  searchResultModal.style.display = "none";
+};
+
+window.onclick = function(event) {
+  console.log("window was clicked");
+  if (event.target === searchResultModal) {
+    console.log("player clicked on somewhere and should be closed")
+    searchResultModal.style.display = "none";
+  }
+
+  // here display the users found
+};
+
+io.socket.on('noPlayerFound', function(){
+  alert("No Player Found");
+});
+
+io.socket.on('playerFound', function(data){
+  //alert("Player was found");
+  searchResultModal.style.display = "block";
+  //$("body").load('gameMatchRoom');
+
+})
 
 io.socket.on('addRoomToView', function(data){
   console.log('addRoomToView called');
@@ -11,13 +46,6 @@ io.socket.on('addRoomToView', function(data){
     '<p id="gameNameHostname">' + 'Game host:' + data.host + '</p> ' +
     '</div>';
 });
-
-for(var i=0; joinGameButtons.length; i++){
-  button[1] = joinGameButtons[i]
-  addEventListener('click',function(){
-    console.log('asked to join a game');
-  })
-}
 
 
 io.socket.on('addRoomEventListeners', function(data){
@@ -84,4 +112,5 @@ io.socket.on('errorAlert', function(data){
 io.socket.on('addToSpectatorRoom', function(data){
 
 })
+
 

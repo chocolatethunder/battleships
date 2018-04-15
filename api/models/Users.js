@@ -28,24 +28,15 @@ module.exports = {
       required: true,
       unique: true
     },
-	// One to one association (references)
-	profile:{
-		collection:'profile',
-		via:'uid'
-	},
-	// One to many association (references)
-	winner:{
-		collection:'game',
-		via:'winner'
-	},
-	loser:{
-		collection:'game',
-		via:'loser'
-	},
-	friends: {
-		collection:'friends',
-		via:'fid'
-	}
+    gamesPlayed:{
+      type: 'int'
+    },
+    gamesWon:{
+      type: 'int'
+    },
+    ranking:{
+      type: 'string'
+    }
   },
   customToJSON: function(){
     return _.omit(this, ['password'])
