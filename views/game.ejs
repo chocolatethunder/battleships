@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <link  type="text/css" rel="stylesheet" href="/styles/styles.css"></link>
+  <title>Battleship</title>
+</head>
+<body>
+<div id="pageDisplay">
+  <div class="text-center">
+    <h1>Game Lobby</h1>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col col-sm-6" align="center">
+        <div>
+          Profile
+          <br>
+          <img id="profile" class="img-circle" src="https://customers.accrisoft.com/clientuploads/communities.png" >
+        </div>
+        <div id="hostGameRoom">
+          <button class="btn btn-primary" id="hostGameBtn">Host a game</button>
+        </div>
+        <div>
+          Search for a profile
+          <div class="input-group">
+            <input type="text" class="form-control" id="playerToSearchFor" placeholder="Enter player profile name here">
+            <span class="input-group-btn">
+            <button class="btn btn-default" id="searchPlayerBtn" type="button">Look up profile</button>
+          </span>
+          </div>
+          <!–– Got this from https://getbootstrap.com/docs/4.0/components/modal/ ––>
+          <div id="searchResultModal" class="modal" tabindex="-1" role="dialog" style="min-height:70%;width:70%">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">User Profile</h5>
+                  <h4 id="username"></h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="searchResults">
+                  <p>Show search results here.</p>
+                  <div class="row">
+                    <div id="profilePicture" class="col-sm-6">
+                      <img id="profilePicture" src="https://customers.accrisoft.com/clientuploads/communities.png" class="img-thumbnail">
+                    </div>
+                    <div class="col-sm-6 text-left" id="userProfileResult">
+                      <div id="rank">
+                      </div>
+                      <div id="numGamesPlayed">
+                        Games played: 10
+                      </div>
+                      <div id="numGamesWon">
+                        Games won: 8
+                      </div>
+                      <div id="winRate">
+                        Win rate: 80%
+                      </div>
+                      <div id="averageShotsTakenInWin">
+                        avg
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div>
+                      Pie chart. Use Chart.js
+                      <div class="chart-container" style="height:15vh; width:15vw">
+                        <canvas id="myChart"></canvas>
+                      </div>
+                      <script>
+
+
+                      </script>
+
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <hr>
+                <div class="modal-footer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col col-sm-6">
+        <div>
+          Open rooms
+          <div id="rooms">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/dependencies/sails.io.js"></script>
+<script src="/js/gameLobby.js"></script>
+<script src="/js/profile.js"></script>
+</body>
+</html>
