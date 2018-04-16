@@ -315,7 +315,7 @@ function fireTorpedo(e) {
 
       // if player clicks a square with no ship, change the color and change square's value
       if (enemyBoard[row][col] == 0) {
-        e.target.style.background = '#bbb';
+        e.target.style.backgroundImage = "url('Assets/Ripple.png'), " + e.target.style.backgroundImage;
         // set this square's value to 3 to indicate that they fired and missed
         enemyBoard[row][col] = 3;
         myTurn = false;
@@ -359,7 +359,7 @@ io.socket.on('receiveTorpedo', function(eid) {
   document.getElementById("turnTracker").innerHTML = "Your Turn!";
   // if enemy clicks a square with no ship, change the color and change square's value
   if (playerBoard[row][col] == 0) {
-    document.getElementById(eid).style.background = '#bbb';
+	document.getElementById(eid).style.backgroundImage = "url('Assets/Ripple.png'), " + document.getElementById(eid).style.backgroundImage;
     // set this square's value to 3 to indicate that they fired and missed
     playerBoard[row][col] = 3;
     document.getElementById("informationBar").innerHTML = "Your opponent missed!"
