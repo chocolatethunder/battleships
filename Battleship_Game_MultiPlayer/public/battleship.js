@@ -307,7 +307,9 @@ function fireTorpedo(e) {
 			
 			//send message to the server that the player selected a target
 			var eid = "p" + row + col;
-			socket.emit('transferTorpedo', eid);
+
+			io.socket.post('/game/transferTorpedo', {eid: eid})
+			//socket.emit('transferTorpedo', eid);
 			
 			// if player clicks a square with no ship, change the color and change square's value
 			if (enemyBoard[row][col] == 0) {

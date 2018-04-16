@@ -48,11 +48,36 @@ module.exports = {
 
         let randomNum = Math.floor(Math.random() * Math.floor(1000000));
         let roomName = "room" + randomNum;
+        console.log("creating and joing room:" + roomName);
         gameRooms.push({name:randomNum, host:username, numActivePlayers:1, userOneId:userId, userOneSocketId: sails.sockets.getId(req)});
         sails.sockets.join(req, roomName);
         //sails.sockets.broadcast('GameRoom1', 'addRoomToView', {roomName:"GameRoo12"});
         // add a room to all
-        sails.sockets.blast('addRoomToView', {roomName:roomName, host:username});
+        //sails.log("\n\n\n\n cookie" + sails.config.session.cookie);
+        //sails.log("\n\n\n\n" + sails.config.session.secret);
+
+        sails.log("\n\n\n\n\n\n Hearrs" +req.headers.cookie);
+        let currentSessionId = req.headers.cookie.split("=");
+        let indexOfSession;
+        for(let i=0; i < currentSessionId.length; i++){
+          if(currentSessionId[i] == "sails.sid"){
+            indexOfSession = i + 1;
+          }
+        }
+
+        let actualSessionId =currentSessionId[indexOfSession];
+        if(typeof actualSessionId == "undefined") {
+          actualSessionId = "blah";
+        }else{
+          actualSessionId = actualSessionId.split(";")[0];
+        }
+        console.log("actualSessionId" + actualSessionId);
+
+        sails.log(currentSessionId);
+        console.log("\n\n\n\nsid:" + req.sessionId);
+
+
+        sails.sockets.blast('addRoomToView', {roomName:roomName, host:username, ourSessionId:actualSessionId});
         // emit a socket to the current user to send them to a waiting room;
         sails.sockets.broadcast(sails.sockets.getId(req),'takePlayerToWaitingRoom');
 
@@ -90,18 +115,86 @@ module.exports = {
       // must update number of players already in the game room
       gameRooms[canJoin.roomIndex].numActivePlayers += 1;
       gameRooms[canJoin.roomIndex].userTwoId = userId;
-      sails.sockets.join(req, gameRooms[canJoin.roomIndex].name);
+      gameRooms[canJoin.roomIndex].userTwoSocketId = sails.sockets.getId(req);
+      console.log("canJoin.roomIndex.name" + gameRooms[canJoin.roomIndex].name )
+      let roomWeShouldJoin = "room" + gameRooms[canJoin.roomIndex].name;
+      sails.sockets.join(req, roomWeShouldJoin);
       console.log("sails.sockets.getId(req)" + sails.sockets.getId(req));
       // emit a socket saying we have joined the game room
       // we should now start the game if there are two players in the current gameRooms
       hostSocketId = gameRooms[canJoin.roomIndex].userOneSocketId;
-      sails.sockets.broadcast([sails.sockets.getId(req), hostSocketId], 'startGame');
+
+      sails.sockets.broadcast([sails.sockets.getId(req), hostSocketId], 'startGame', {sessionId: 'one'});
 
     }
     else{
       console.log("we can't join this game room")
       // notify the player that they can't join the game room  or do nothing
       sails.sockets.broadcast(sails.sockets.getId(req),'errorAlert', {message:'Cannot Join Room'});
+
+    }
+
+  },
+  transferBoard: function(req,res){
+    // figure out what room we are currently in
+    console.log("req.isSocket1" + req.isSocket === true);
+    console.log("transfer board called");
+    sails.log('date sent was:' + req.body.playerBoard);
+    // check the room and find the other player in the room
+    //then send them the eid
+    //sails.log(req);
+    console.log('\n\n\n\n\n\n\n\n trying to find room');
+    //sails.log(req.socket);
+    //sails.sockets.broadcast('')
+    var roomToEmitTo = findRoom(req.session.passport.user);
+    console.log("roomTOEmmitTo"  + roomToEmitTo);
+    sails.log(roomToEmitTo);
+    if(roomToEmitTo.roomFound == true){
+      sendToThisRoom = "room" + roomToEmitTo.roomName;
+      console.log("broadcasting to room:" + sendToThisRoom + "omitting this socket:" + sails.sockets.getId(req));
+      //sails.sockets.blast('yell', {message: 'anything'});
+     // sails.sockets.blast('yell', {message:'message'});
+      //sails.sockets.broadcast(sendToThisRoom, 'receiveBoard', req.body.playerBoard, sails.sockets.getId(req))
+      console.log("checking to make sure request is a socket: " + req.isSocket === true)
+      let currentSessionId = req.headers.cookie.split("=");
+      let indexOfSession;
+      for(let i=0; i < currentSessionId.length; i++){
+        if(currentSessionId[i] == "sails.sid"){
+          indexOfSession = i + 1;
+        }
+      }
+
+      let actualSessionId = currentSessionId[indexOfSession].split(";")[0];
+
+      sails.sockets.broadcast(sendToThisRoom, 'receiveBoard', {board: req.body.playerBoard, ourSessionId:actualSessionId},req);
+
+    }else{
+      console.log("no room found");
+      sails.sockets.broadcast(sails.sockets.getId(req), {message: 'Error sending eid to other socket'});
+
+    }
+
+
+
+    //sails.sockets.broadcast('', 'receiveTorpedo', eid);
+  },
+  transferTorpedo: function(req,res){
+    //socket.broadcast.emit('receiveTorpedo', eid);
+    var roomToEmitTo = findRoom(req.session.passport.user);
+    console.log("roomTOEmmitTo"  + roomToEmitTo);
+    sails.log(roomToEmitTo);
+    if(roomToEmitTo.roomFound == true){
+      sendToThisRoom = "room" + roomToEmitTo.roomName;
+      console.log("broadcasting to room:" + sendToThisRoom + "omitting this socket:" + sails.sockets.getId(req));
+      //sails.sockets.blast('yell', {message: 'anything'});
+      // sails.sockets.blast('yell', {message:'message'});
+      //sails.sockets.broadcast(sendToThisRoom, 'receiveBoard', req.body.playerBoard, sails.sockets.getId(req))
+      sails.log("eid: " + req.body.eid );
+      sails.sockets.broadcast(sendToThisRoom, 'receiveBoard', {eid: req.body.eid}, req);
+
+    }else{
+      console.log("no room found");
+      sails.sockets.broadcast(sails.sockets.getId(req), {message: 'Error sending eid to other socket'});
 
     }
 
@@ -135,3 +228,19 @@ function canJoinRoom(gameRoom, userId){
   console.log("inCanJoinRoom");
   return {canJoin: false, roomIndex:0}
 }
+
+function findRoom(userId){
+  console.log("userSocketId" + userId);
+  for(var i=0; i < gameRooms.length; i++){
+    console.log("GameRoom.name" + gameRooms[i].name + "userOneSocketId" + gameRooms[i].userOneSocketId + "userTwoSocketId" + gameRooms[i].userTwoSocketId)
+    if(gameRooms[i].userOneId == userId || gameRooms[i].userTwoId == userId ){
+      if(gameRooms[i].userOneId == userId){
+
+      }
+      return {roomFound: true, roomName: gameRooms[i].name}
+    }
+  }
+  return {roomFound:false};
+}
+
+

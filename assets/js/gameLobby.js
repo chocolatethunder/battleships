@@ -6,6 +6,7 @@ var playerToSearchFor = document.getElementById('playerToSearchFor');
 var searchResultModal = document.getElementById('searchResultModal');
 var span = document.getElementsByClassName("close")[0];
 var searchResults = document.getElementById('searchResults');
+var sessionId;
 
 searchPlayerBtn.addEventListener('click', function(){
   console.log("searching for player:" + playerToSearchFor.value);
@@ -39,12 +40,12 @@ io.socket.on('addRoomToView', function(data){
     '<button class="button btn-default spectateRoom" id="spectateBtn">Spectate</button> ' +
     '<p id="gameNameHostname">' + 'Game host:' + data.host + '</p> ' +
     '</div>';
-
+  document.cookie = "actualSessionId=" + data.ourSessionId + ";"
 });
 
 
 io.socket.on('takePlayerToWaitingRoom', function(){
- // alert("take player to waiting room");
+  alert("take player to waiting room");
   $("body").load('awaitingPlayer');
 });
 
@@ -97,6 +98,7 @@ io.socket.on('startGame', function(data){
   //console.log('about to add this user to this room:' + data.user);
   //window.location = "gameMatchRoom";
   alert("starting game");
+  $("body").load('gameMatchRoom');
 });
 
 io.socket.on('errorAlert', function(data){
@@ -106,5 +108,43 @@ io.socket.on('errorAlert', function(data){
 io.socket.on('addToSpectatorRoom', function(data){
 
 })
+
+
+io.socket.on('receiveBoard', function(newBoard) {
+  alert("received board");
+  let currentSessionId = req.headers.cookie.split("=");
+  let indexOfSession;
+  for(let i=0; i < currentSessionId.length; i++){
+    if(currentSessionId[i] == "actualSessionId"){
+      indexOfSession = i + 1;
+    }
+  }
+
+  let actualSessionId = currentSessionId[indexOfSession].split(";")[0];
+  console.log("actualSessionId:" + actualSessionId);
+
+  if(newBoard.ourSessionId == actualSessionId){
+    enemyBoard = newBoard.board;
+    enemyBoard = newBoard.board;
+    enemyReady = true;
+    if(playerReady && enemyReady) {
+      //remove the place ships ui and replace it with the opponents board
+      var p = document.getElementById("placeShips");
+      p.style.display = "none";
+      var en = document.getElementById("enemyBoard");
+      en.style.display = "inline-block";
+      //the player that finishes setting up their board first gets to go first
+      myTurn = true;
+      document.getElementById("turnTracker").innerHTML = "Your Turn!";
+      document.getElementById("informationBar").innerHTML = "You finished placing ships first so you get to take the first shot!";
+    }
+  }
+
+
+});
+
+
+
+// battleship.js
 
 
